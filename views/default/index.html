@@ -1,0 +1,1515 @@
+{{extend 'layout_bootstrap3.html'}}
+{{import os
+xhours_css = '%sstatic/%s' % (request.folder, 'css/xhours_main.css')
+xhours_mtime = str(int(os.path.getmtime(xhours_css)))
+}}
+
+<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/xhours.css')+'?'+xhours_mtime}}"/>
+<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/sgicons.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/fullcalendar.min.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/bootstrap-datepicker3.min.css')}}"/>
+<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/jquery-clockpicker.min.css')}}">
+<link rel="stylesheet" type="text/css" href="{{=URL('static', 'css/jquery.qtip.min.css')}}"/>
+
+<link href='https://fonts.googleapis.com/css?family=Playfair+Display+SC:700' rel='stylesheet' type='text/css'>
+
+<style>
+h2 {
+  font-family: 'Playfair Display SC', serif;
+}
+ul {
+    padding: 0;
+}
+li {
+    list-style: none;
+}
+label {
+    color: #888;
+}
+
+.icon-container {
+    position: absolute;
+    bottom: 0;
+    width: 98%;
+    text-align: right;
+}
+.icon-holiday-can {
+    display: inline-block;
+    margin-right: 2px;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    background: transparent url(../static/images/xhours_icon_image_map.png) -140px -0px no-repeat;
+}
+.day-helper-text {
+    color: #A94442;
+    vertical-align: middle;
+    font-size: 10pt;
+}
+
+.bold {
+    font-weight: 700;
+}
+.label {
+    padding: .3em .6em .2em;
+}
+.wordwrap {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -webkit-pre-wrap;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+.menu-link:hover {
+    text-decoration: none;
+}
+.fc-day {
+    position: relative;
+}
+.fc-button-group > button {
+    border: 1px solid #aaa;
+}
+.fc-button {
+    border-radius: 0;
+}
+.fc-event {
+    border-radius: 0;
+}
+#nav-cal {
+    border-bottom: 1px solid #ebebeb;
+    padding: 0 0 9px;
+    margin: 9px 0 0;
+    position: relative;
+}
+#top-div {
+    position: relative;
+}
+#nav-side {
+    position: absolute;
+    margin-left: 30px;
+    margin-top: 10px;
+    width: 145px;
+    left: 0;
+    top: 0;
+    -mox-transition: all .218s;
+    -webkit-transition: all .218s;
+}
+#mainbody {
+    margin-left: 190px;
+    padding-top: 9px;
+    padding-right: 18px;
+    -moz-transition: margin-left .218s;
+    -webkit-transition: margin-left .218s;
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-direction: normal;
+    -moz-box-direction: normal;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -webkit-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-pack: justify;
+    -moz-box-pack: justify;
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+.side-div {
+    padding: 0 0 15px;
+}
+.left-half {
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    -webkit-order: 0;
+    order: 0;
+    -webkit-box-flex: 0;
+    -moz-box-flex: 0;
+    -webkit-flex: 0 1 48%;
+    flex: 0 1 48%;
+    -webkit-align-self: auto;
+    align-self: auto;
+}
+.right-half {
+    -webkit-box-ordinal-group: 1;
+    -moz-box-ordinal-group: 1;
+    -webkit-order: 0;
+    order: 0;
+    -webkit-box-flex: 0;
+    -moz-box-flex: 0;
+    -webkit-flex: 0 0 48%;
+    flex: 0 0 48%;
+    -webkit-align-self: auto;
+    align-self: auto;
+}
+
+/* task card */
+.task-card-cols {
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -webkit-box-pack: justify;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: stretch;
+}
+
+.task-card-thumb {
+    width: 100%;
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color stop(0%, #e6e6e6), color stop(80%, #ccc));
+    background: -moz-radial-gradient(center, circle cover, #e6e6e6 0%, #ccc 80%);
+    background: -webkit-radial-gradient(center, circle cover, #e6e6e6 0%, #ccc 80%);
+    text-align: center;
+}
+.task-card-content {
+    -webkit-flex: 2 1 60%;
+    
+}
+
+.task-duration {
+    border: 1px solid #888;
+    border-radius: 3px;
+    width: 50px;
+    padding: 2px 6px;
+}
+
+.fc-view-container {
+    position: relative;
+}
+
+.fc-sun, .fc-sat {
+    background-color: #f2f2f2;
+}
+.fc-future {
+    background-image: linear-gradient(
+    -45deg,
+    rgba(0, 0, 0, 0.1) 25%,
+    rgba(0, 0, 0, 0.0) 25%,
+    rgba(0, 0, 0, 0.0) 50%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.1) 75%,
+    rgba(0, 0, 0, 0.0) 75%,
+    rgba(0, 0, 0, 0.0)
+    );
+    background-size: 4px 4px;
+}
+
+.timeline {
+    position: absolute;
+    left: 59px;
+    border: none;
+    border-top: 1px solid #cc0000;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    z-index: 999;
+}
+
+.bubble a {
+    text-decoration: none;
+}
+.bubble {
+    z-index: 1001;
+    width: 400px;
+    border: 1px solid #ccc;
+    position: absolute;
+    background: #fff;
+}
+.bubble.has-bottom-prong {
+    margin-bottom: 9px;
+}
+.bubblemain {
+    padding: 16px 28px;
+    position: relative;
+}
+.bubblecontent {
+    overflow: hidden;
+}
+.bubbleclose {
+    cursor: pointer;
+    right: 16px;
+    width: 13px;
+    position: absolute;
+    font-weight: bold;
+}
+.cb-root, .eb-root {
+    width: 100%;
+    overflow: hidden;
+}
+.cb-table {
+    width: 100%;
+}
+.cb-key, .eb-key {
+    vertical-align: top;
+    white-space: nowrap;
+    padding: .4em 1em .4em 0;
+}
+.cb-value, .eb-value {
+    width: 95%;
+    padding: .4em 0;
+}
+.cb-hint {
+    padding-top: 4px;
+    padding-left: 4px;
+    font-size: 80%;
+}
+.cb-actions {
+    padding-top: 8px;
+}
+.bubble-button {
+    margin-right: 1em;
+}
+
+/* datepicker style*/
+.datepicker-inline {
+    width: 100%;
+}
+.datepicker table {
+    font-size: 12px;
+    
+}
+.datepicker table tr th, .datepicker table tr td {
+    padding: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 0;
+}
+.datepicker table tr td.active, .datepicker table tr td.selected {
+    color: #333 !important;
+    background-color: #eee !important;
+    border: none;
+    text-shadow: none;
+}
+.halved {
+    display: inline-block;
+    width: 48%;
+}
+
+/* Task Cards */
+.task-card.ui-draggable-dragging {
+    max-width: 260px;
+}
+.task-card {
+    max-height: 300px;
+    margin: 3px;
+    padding: 0.4em;
+    border: 1px solid #888;
+    background-color: #f5f5f5;
+    cursor: move;
+}
+.task-thumb {
+    width: 100px;
+    height: 67px;
+    display: inline-block;
+    vertical-align: initial;
+}
+.task-card-label {
+    font-size: 0.9em;
+    display: -webkit-flex;
+    -webkit-flex-direction: row;
+}
+.task-card-duration {
+    display: -webkit-flex;
+    -webkit-flex-direction: row-reverse;
+}
+
+.branded-header {
+    font-weight: 700;
+    color: #777;
+    text-shadow: 0 1px 0 #fff;
+}
+.thumb-wrapper {
+    display: inline-block;
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color stop(0%, #e6e6e6), color stop(80%, #ccc));
+    background: -moz-radial-gradient(center, circle cover, #e6e6e6 0%, #ccc 80%);
+    background: -webkit-radial-gradient(center, circle cover, #e6e6e6 0%, #ccc 80%);
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+
+/* Scrollbar */
+
+#task-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+#task-container::-webkit-scrollbar {
+    width: 10px;
+    background-color: #F5F5F5;
+}
+
+#task-container::-webkit-scrollbar-thumb {
+    background-color: #999;
+}
+
+
+#calendar .fc-scroller::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 2px rgba(0,0,0,0.3);
+    background-color: #F5F5F5;
+}
+
+#calendar .fc-scroller::-webkit-scrollbar {
+    width: 14px;
+    background-color: #F5F5F5;
+}
+
+#calendar .fc-scroller::-webkit-scrollbar-thumb {
+    background-color: #999;
+}
+
+
+#tasks {
+    position: relative;
+}
+#task-container {
+    overflow-y: auto;
+}
+
+/* Flex */
+#task-list {
+    
+    display: -webkit-flex;
+    -webkit-flex-wrap: wrap;
+}
+.task-icon {
+    margin-top: 0;
+    margin-right: 4px;
+}
+.task-card {
+    display: -webkit-flex;
+    padding: 0.5em;
+    width: 100%;
+}
+.task-card-title {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+.task-card img {
+    max-width: 100%;
+}
+.task-content {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    padding: 0.5em;
+    width: 100%;
+}
+.task-desc {
+    -webkit-flex: 1 0 auto;
+    font-size: 0.9em;
+    margin-top: auto;
+}
+.task-label {
+    font-weight: 700;
+}
+.top-label {
+    display: none;
+}
+@media (min-width: 800px) {
+    .task-card {
+        width: 100%;
+    }
+    .day-helper-text {
+        font-size: 8pt;
+    }
+}
+@media (min-width: 1080px) {
+    .task-card {
+        width: 48%;
+    }
+}
+@media (min-width: 1280px) {
+    .top-label {
+        display: block;
+    }
+    .task-card {
+        width: 32%;
+    }
+    .day-helper-text {
+        font-size: 10pt;
+    }
+}
+@media (min-width: 1620px) {
+    .task-card {
+        width: 24%;
+    }
+}
+
+#task-filter {
+    display: -webkit-flex;
+    margin-bottom: 5px;
+}
+#task-filter h1 {
+    -webkit-flex-grow: 1;
+}
+.sort {
+    display: -webkit-flex;
+}
+
+.task-filter-container {
+    display: -webkit-flex;
+    -webkit-flex-direction: column;
+    margin-left: 2px;
+}
+
+.loading-msg {
+    text-align: center;
+    font-size: 3rem;
+    margin-top: 10%;
+}
+
+.loading-overlay {
+    position:absolute;
+    left:0;
+    top: 0;
+    background: rgba(255,255,255,.5);
+    width: 100%;
+    height: 100%;
+}
+.loading-overlay > div {
+    position: relative;
+    top: 25%;
+    text-align: center;
+}
+
+.cloading-overlay {
+    position:absolute;
+    left:0;
+    top: 0;
+    background: rgba(205,205,205,.6);
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+.cloading-overlay > div {
+    position: relative;
+    top: 30%;
+    text-align: center;
+}
+
+
+#circle-container{
+    width:50px;
+    height:50px;
+    position:relative;
+    margin:auto;
+    -webkit-animation: rotate 2.5s linear 0 infinite forwards;
+}
+.full {
+    width:50px;
+    height:50px;
+    position: absolute;
+    border-radius: 50%;
+    background:#4472fb;
+    z-index:100;
+    -webkit-animation: back-fill 2.5s linear 0 infinite forwards;
+}
+.quarter{width:25px;height:25px; position:absolute; z-index: 200;}
+.quarter:nth-of-type(1){
+    border-top-left-radius:100%;
+    background:#db3131;
+    top:0px;
+    left:0px;
+}
+.quarter:nth-of-type(2){
+    border-top-right-radius:100%;
+    background:#db3131;
+    top:0px;
+    left:50%;
+}
+.quarter:nth-of-type(3){
+    border-bottom-left-radius:100%;
+    background:#4472fb;
+    top:50%;
+    left:0;
+}
+.quarter:nth-of-type(4){
+    border-bottom-right-radius:100%;
+    background:#4472fb; 
+    top:50%;
+    left:50%;
+}
+.bottom-anim {
+    -webkit-transform-origin: top left;
+    -webkit-animation: flip-up-down 2.5s linear 0 infinite forwards;
+}
+.top-anim {
+    border: 1px sold red;
+    -webkit-animation: colour-change 2.5s linear 0 infinite forwards;
+}
+@-webkit-keyframes flip-up-down {
+    0% {background:#4472fa;
+        -webkit-transform: rotateX(180deg);
+    }
+    20% {background:#c32828;}
+    25%, 30% {
+        background:#db3131; 
+        -webkit-transform: rotateX(0deg);
+    }
+    45% {background:#f0ab15;}
+    50%, 55% {
+        background:#ffda1f;
+        -webkit-transform: rotateX(180deg);
+    }
+    70% {background:#299029;}
+    75%, 80% {
+        background:#23a123;
+        -webkit-transform: rotateX(0deg);
+    }
+    95% {background:#3a61d6; }
+    100%, 10% {
+        background:#4472fb;
+        -webkit-transform: rotateX(180deg);
+    }
+}
+@-webkit-keyframes rotate {
+    25% {-webkit-transform: rotate(0deg);}
+    26%,49%{-webkit-transform: rotate(-90deg);}
+    50%, 76% {-webkit-transform: rotate(180deg);}
+    77%, 100% {-webkit-transform: rotate(90deg);}
+}
+@-webkit-keyframes colour-change {
+    0%, 45% {background:#db3131;}
+    46%,50% {background:#ffda1f;}
+    51%, 94% {background:#23a123;}
+    95%, 100% {background:#4472fb;}
+}
+@-webkit-keyframes back-fill {
+    0%, 25% {background:#4472fb;}
+    26%,76% {background:#ffda1f;}
+    77%, 100% {background:#4472fb;}
+}
+
+
+
+
+
+
+/* vars */
+.clockspin {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -15px;
+  margin-left: -15px;
+  border: 3px solid #d9534f;
+  border-radius: 50%;
+}
+.clockspin:before, .clockspin:after {
+  content: "";
+  position: absolute;
+  display: block;
+  width: 3px;
+  border-radius: 1.5px;
+  -webkit-transform-origin: 50% 0%;
+}
+.clockspin:before {
+  background-color: #5cb85c;
+  height: 9px;
+  left: 13.5px;
+  top: 50%;
+  -webkit-animation: spin 2000ms linear infinite;
+}
+.clockspin:after {
+  background-color: #428bca;
+  height: 12px;
+  left: 13.5px;
+  top: 50%;
+  -webkit-animation: spin 500ms linear infinite;
+}
+
+@-webkit-keyframes spin {
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+
+</style>
+
+<div id="calcontent">
+  <div id="top-div"><!-- mothertable -->
+    <div id="nav-side"><!-- nav -->
+      <div id="mini-calendar" class="side-div"></div>
+      <div id="statistic" class="side-div">
+        <div>
+          <label>Today: </label>
+          <span id="logged-today"></span>
+        </div>
+        <div>
+          <label>Week: </label>
+          <span id="logged-week"></span>
+        </div>
+      </div>
+      <div class="side-div">
+        <a href="#" class="menu-link">Task Lookup</a>
+      </div>
+      <div class="side-div">
+        <a href="#" class="menu-link">Bookmarks</a>
+      </div>
+      {{if auth.has_membership("admin") or auth.has_membership("hr") or auth.has_membership("supe") or auth.has_membership("pm"):}}
+      <div class="side-div">
+        {{=impselect}}
+      </div>
+      {{pass}}
+    </div>
+    <div id="mainbody"><!-- maincell -->
+      <div id="tasks" class="left-half">
+        <nav id="task-filter">
+          <h1 class="top-label">Tasks</h1>
+          <div class="sort">
+            <div class="task-filter-container">
+              <label>Project:</label>
+              <select id="filter-project" class="task-filter form-control input-sm"><option value="">All Project</option></select>
+            </div>
+            <div class="task-filter-container">
+              <label>Status:</label>
+              <select id="filter-status" class="task-filter form-control input-sm"><option value="">All Status</option></select>
+            </div>
+            <div class="task-filter-container">
+              <label>Due:</label>
+              <select id="filter-duedate" class="task-filter form-control input-sm">
+                <option value="">All Task</option>
+                <option value="today">Today</option>
+                <option value="tomorrow">Tomorrow</option>
+                <option value="thisweek">This Week</option>
+                <option value="nextweek">Next Week</option>
+                <option value="twoweeks">Within 2 Weeks</option>
+              </select>
+            </div>
+            <div class="task-filter-container">
+              <label>Sort by:</label>
+              <select id="filter-sort" class="task-filter form-control input-sm" disabled>
+                <!-- <option value="recent">Recent</option> -->
+                <option value="name">Name</option>
+                <option value="due">Due</option>
+                <option value="project">Project</option>
+                <option value="status">Status</option>
+              </select>
+            </div>
+          </div>
+        </nav>
+        <div id="task-container">
+        {{=tasklist}}
+        </div>
+      </div>
+      <div id="calendar"></div>
+    </div>
+  </div>
+</div>
+
+<div id="bubble" class="bubble has-bottom-prong" style="display:none;">
+  <div id="bubbleMain" class="bubblemain">
+    <div id="bubbleClose" class="bubbleclose">X</div>
+    <div id="bubbleContent" class="bubblecontent"></div>
+  </div>
+</div>
+
+<script>
+Date.prototype.getWeek = function() {
+    var onejan = new Date(this.getFullYear(), 0, 1);
+    return Math.ceil((((this - onejan) / 86400000) + onejan.getDay() + 1) / 7);
+}
+
+var loading_overlay = '<div id="lov" class="loading-overlay"><div><i class="fa fa-spin fa-refresh fa-4x text-info"></i></div></div>';
+
+var google_overlay = '<div id="cov" class="cloading-overlay"><div id="circle-container"><div class="quarter top-anim"></div><div class="quarter top-anim"></div><div class="quarter bottom-anim"></div><div class="quarter bottom-anim"></div><div class="full"></div></div></div>';
+
+var calendar_overlay = '<div id="cov" class="cloading-overlay"><div class="clockspin"></div><div class="clockspin-help">LOADING</div></div>';
+
+// Holidays
+var holidays = {{=XML(holidays)}};
+
+$(document).ready(function() {
+    
+    // for setting start, end of week
+    moment.fn.weekdayWithStartWeekday = function(targetWeekday, startDayOfWeek) {
+        var weekday = (this.day() + 7 - startDayOfWeek) % 7;
+        return this.add("d", targetWeekday - weekday);
+    }
+    
+    var current_shotgun_id = {{=shotgunid}};
+    var studio = 'toronto';
+    var current_date = new moment();
+    // task dropdown placeholder
+    var task_dropdown = '<i class="fa fa-spin fa-refresh fa-lg text-info"></i>';
+    
+    function get_calendar_height() {
+        return $(window).height() - 100;
+    }
+    
+    $(window).resize(function() {
+        var h = get_calendar_height();
+        $('#calendar').fullCalendar('option', 'height', h+20);
+        $('#task-container').css('height', h-48);
+    });
+    
+    $('.task-card').each(function() {
+        $(this).draggable({
+            zIndex: 999,
+            revert: true,
+            revertDuration: 0,
+            helper: 'clone',
+            appendTo: 'body',
+            scroll: 'false',
+        });
+    });
+    
+    /*
+    Return true if given date is holiday
+    @param d: moment
+    */
+    function is_holiday(d) {
+        var country = studio === 'toronto'? 'can' : 'us';
+        var year = d.year();
+        var dstr = d.format('MM-DD');
+        for (i in holidays[country][year+'']) {
+            if (dstr === holidays[country][year][i][0]) {
+                return holidays[country][year][i][1];
+            }
+        }
+        return '';
+    }
+    
+    /* compare 2 moment dates (ignore time) */
+    function is_same_date(d1, d2) {
+        if (d1.dayOfYear() === d2.dayOfYear()) {
+            return true;
+        }
+        return false;
+    }
+    
+    function str_time_to_minutes(str_time) {
+        var arr_time = str_time.split(":");
+        var hour = parseInt(arr_time[0]);
+        var minutes = parseInt(arr_time[1]);
+        return((hour * 60) + minutes);
+    }
+    
+    /* Return duration between two Moment times in minutes */
+    function moment_duration(start, end) {
+        return moment.duration(end.diff(start)) / 60000;
+    }
+    
+    /* set task list height */
+    var wheight = get_calendar_height();
+    $('#task-list').css('height', wheight-50);
+    
+    var $bubble = $('#bubble');
+    
+    function bubble_position(jsEvent) {
+        if (typeof jsEvent === 'undefined') {
+            var w = $(window).width();
+            var r = $bubble.offset().left;
+            var d = (r+400) - w;
+            if (d > 0) {
+                $bubble.css({left:r-(d+10)})
+            }
+            var h = $(window).height();
+            var t = $bubble.offset().top;
+            var d = (t+186) - h;
+            if (d > 0) {
+                $bubble.css({top:t-(d+10)})
+            }
+        } else {
+            var w = $(window).width();
+            var r = jsEvent.pageX;
+            var d = (r+400) - w;
+            if (d > 0) {
+                r -= (d+10);
+            }
+            var h = $(window).height();
+            var t = jsEvent.pageY;
+            var d = (t+186) - h;
+            if (d > 0) {
+                t -= (d+10);
+            }
+            $bubble.css({'top':t, 'left':r}).show();
+        }
+    }
+    
+    $('#calendar').fullCalendar({
+        customButtons: {
+            myCustomBtn: {
+                text: 'custom',
+                click: function() {
+                    alert('custom btn clicked');
+                }
+            }
+        },
+        defaultView: 'month',
+        height: wheight,
+        header: {
+            left: 'prev,next today,myCustomBtn',
+            center: 'title',
+            right: 'agendaDay,agendaWeek,month',
+        },
+        businessHours: {
+            start: '9:30',
+            end: '18:30',
+        },
+        eventLimitText: 'timelogs',
+        eventLimit: true,
+        views: {
+            month: {
+                timeFormat: ' ',
+                eventLimit: 1,
+            },
+            week: {
+                displayEventEnd: false,
+            },
+            day: {
+                
+            }
+        },
+        scrollTime: '08:00:00',
+        defaultTimedEventDuration: '01:00',
+        nowIndicator: true,
+        eventBorderColor:'#888',
+        editable: true,
+        loading: function(isloading) {
+            if (isloading) {
+                $('.fc-view-container').prepend(calendar_overlay);
+            } else  {
+                $('#cov').remove();
+            }
+        },
+        droppable: true,
+        drop: function() {
+            
+        },
+        unselectAuto: true,
+        unselectCancel: '#bubble > *',
+        selectable: true,
+        selectHelper: true,
+        select: function(start, end, jsEvent, view) {
+            console.log('select');
+            
+            if (view.name !== 'month' && start.dayOfYear() <= current_date.dayOfYear()) {
+                var endtime = end.format('h:mma');
+                var starttime = start.format('ddd, MMMM d, h:mma');
+                
+                // show event bubble popup
+                $('#bubbleContent').html('{{=bubblecreate}}').find('.select-wrapper').html(task_dropdown);
+                $('#cb-starttime').val(start.format());
+                $('#cb-endtime').val(end.format());
+                $('#cb-when').text(starttime + ' - ' + endtime);
+                $bubble.hide().css({'top':jsEvent.pageY, 'left':jsEvent.pageX}).show();
+                
+                // check bubble task dropdown
+                if ($('#task-list > li').length === 0) {
+                    get_tasks($('#impersonate').val(), true, '');
+                } else {
+                    bubble_position();
+                }
+            }
+        },
+        dayRender: function(date, cell) {
+            var holiday_name = is_holiday(date);
+            if (holiday_name) {
+                var hspan = '<div class="icon-container"><i class="icon-holiday-can"></i><span class="day-helper-text">'+holiday_name+'</span></div>';
+                $(cell).addClass('holiday').append(hspan);
+            }
+        },
+        dayClick: function(date, jsEvent, view) {
+            // month view click
+            // month day click - hide calendar view, show task view
+            if (date.dayOfYear() <= current_date.dayOfYear()) {
+                if (view.name === 'month') {
+                    $('#calendar').fullCalendar('changeView', 'agendaDay');
+                    $('#calendar').fullCalendar('gotoDate', date);
+                }
+            } else {
+                return false;
+            }
+        },
+        eventClick: function(calEvent, jsEvent, view) {
+            {{if not isadmin:}}
+            if (calEvent.allDay) {
+                console.log('cannot edit all day event');
+                return false;
+            }
+            //if (!is_same_date(calEvent.start, current_date)) {
+            if (!calEvent.start.isSame(current_date, 'day')) {
+                calEvent.startEditable = false;
+                console.log('cannot edit past day log');
+                return false;
+            }
+            {{pass}}
+            
+            //console.log(calEvent);
+            if (!calEvent._allDay) {
+                //console.log(calEvent);
+                var endtime = calEvent.end.format('h:mma');
+                var starttime = calEvent.start.format('ddd, MMMM d, h:mma');
+                
+                $('#bubbleContent').html('{{=bubbleedit}}').find('.select-wrapper').html(task_dropdown);
+                $('#eb-when').text(starttime + ' - ' + endtime);
+                $bubble.hide().css({'top':jsEvent.pageY, 'left':jsEvent.pageX}).show();
+                
+                // get calEvent start & end times, description, task id
+                if ($('#task-list > li').length === 0) {
+                    get_tasks($('#impersonate').val(), true, calEvent.taskid, jsEvent);
+                } else {
+                    $('#bubbleContent').find('.select-wrapper').html(task_dropdown);
+                    $('#task-select').val(calEvent.taskid);
+                    bubble_position(jsEvent);
+                }
+            }
+        },
+        eventDrop: function(event, delta, revertFunc, jsEvent, ui, view) {
+            // event move - update timelog logged date, start time
+            console.log('eventdrop');
+            
+            if (!event.start.hasTime() || event.start.isAfter(current_date, 'day')) {
+                revertFunc();
+                return;
+            }
+            
+            var date = event.start.format('YYYY-MM-DD');
+            
+            // HACK to deal with shotgun timeformat
+            var offset = '-0' + (+moment.parseZone(current_date).utcOffset() / -60) + ':00';
+            var starttime = event.start.format() + offset;
+            var endtime = event.end.format() + offset;
+            
+            $.ajax({
+                url: '{{=URL("ajaxcalls", "editTime")}}',
+                data: {
+                    timelogid: event.id,
+                    date: date,
+                    start: starttime,
+                    end: endtime,
+                },
+            })
+            .done(function(data) {
+                if (data === '') {
+                    console.log('timelog updated');
+                } else {
+                    alert('Timelog update failed.');
+                }
+            })
+            .fail(function(xhr, status) {
+                alert("Timelog update failed: " +  status);
+                console.log(status);
+                revertFunc();
+            });
+        },
+        eventReceive: function(event) {
+            // new task drop
+            var taskid = event.taskid;
+            var projectid = event.projectid;
+            var date = event.start.format('YYYY-MM-DD');
+            var duration = moment.duration(event.end.diff(event.start)) / 60000;
+            var comment = '';
+            
+            var offset = '-0' + (+moment.parseZone(current_date).utcOffset() / -60) + ':00';
+            var start = event.start.format() + offset;
+            var end = event.end.format() + offset;
+            
+            $.ajax({
+                url: '{{=URL("ajaxcalls", "logTime")}}',
+                data: {
+                    suserid: {{=shotgunid}},
+                    taskid: taskid,
+                    projectid: projectid,
+                    duration: duration,
+                    date: date,
+                    start: start,
+                    end: end,
+                    comment: comment,
+                },
+            })
+            .done(function(data) {
+                if (data !== '') {
+                    // timelog_id
+                    event.id = data;
+                    $('#calendar').fullCalendar('updateEvent', event);
+                    //$('#calendar').fullCalendar('refetchEvents');
+                } else {
+                    alert('Timelog update failed.');
+                }
+            })
+            .fail(function() {
+                $('#calendar').fullCalendar('unselect');
+                alert("Timelog Create failed: " +  status);
+                console.log(status);
+            });
+            
+        },
+        eventResize: function(event, delta, revertFunc, jsEvent, ui, view) {
+            // event duration change in week, day view - update timelog duration, end time
+            var offset = '-0' + (+moment.parseZone(current_date).utcOffset() / -60) + ':00';
+            var endtime = event.end.format() + offset;
+            var duration = moment_duration(event.start, event.end);
+            
+            $.ajax({
+                url: '{{=URL("ajaxcalls", "editTime")}}',
+                data: {
+                    timelogid: event.id,
+                    duration: duration,
+                    end: endtime,
+                },
+            })
+            .done(function(data) {
+                if (data === '') {
+                    console.log('timelog updated');
+                } else {
+                    alert('Timelog update failed.');
+                }
+            })
+            .fail(function(xhr, status) {
+                alert("Timelog update failed: " +  status);
+                console.log(status);
+                revertFunc();
+            });
+        },
+        eventRender: function(event, element, view) {
+            // Check if rendering existing event or helper event
+            // delete helper event if future date
+            console.log(event);
+            if (event.start.dayOfYear() > current_date.dayOfYear()) {
+                if (event.hasOwnProperty('editable')) {
+                    $('#calendar').fullCalendar('unselect');
+                    return false;
+                }
+            }
+            // set project_id and task_id of timelog to event
+            element.attr('projectid', event.projectid);
+            element.attr('taskid', event.taskid);
+            
+            var duration;
+            var minutes = 0;
+            try {
+                minutes = moment_duration(event.start, event.end);
+            } catch (err) {
+                console.log(event);
+            }
+            if (minutes > 60) {
+                var tmp = (minutes / 60).toFixed(2).replace(/(\.[0-9]*?)0+$/, '$1').replace(/\.$/, '');
+                duration = tmp + 'hrs';
+            } else {
+                duration = minutes + 'min';
+            }
+            element.find('.fc-time').append('<span class="pull-right">'+duration+'</span>');
+            element.find('.fc-event-title').append('<br>' + event.description);
+            
+            // disable editable option - except HR
+            {{if not isadmin:}}
+            //if (/vacation/i.test(event.title) || !is_same_date(event.start, current_date)) {
+            if (/vacation/i.test(event.title) || !event.start.isSame(current_date, 'day')) {
+                event.startEditable = false;
+            }
+            {{pass}}
+            
+            // custom event attributes = project, description - only for existing event
+            if (event.project) {
+                var desc = event.project.toUpperCase() + '<br>' + event.description || 'no description';
+                element.qtip({
+                    style: 'qtip-dark qtip-shadow',
+                    position: {
+                        my: 'bottom left',
+                        at: 'top center',
+                    },
+                    show: {
+                        delay: 1000
+                    },
+                    hide: {
+                        delay: 1
+                    },
+                    content: desc
+                });
+            }
+            
+        },
+        eventAfterRender: function(view) {
+            console.log('render complete');
+        },
+        events: {
+            url: '{{=URL("ajaxcalls", "getUserTimelogs")}}',
+            data: function() {
+                var ival = $('#impersonate').val();
+                var sid = ival === '' ? {{=shotgunid}} : ival;
+                return {shotgunid:sid};
+            },
+            error: function() {
+                console.log("error fetching timelogs");
+            }
+        },
+        viewRender: function(view, element) {
+            //console.log('changing view');
+            var new_date = view.intervalStart; // moment
+            var ndate = new Date(new_date.format('MM/DD/YYYY'));
+            var z = $('#mini-calendar').datepicker('getDate');
+            if (z !== ndate) {
+                $('#mini-calendar').datepicker('update', ndate);
+            }
+            
+            $('#tasks').hide();
+            $('#calendar').removeClass('right-half');
+            
+            if (view.name === 'month' || view.name === 'agendaWeek') {
+                // highlight affected date range
+                $('td.range').removeClass('range selected');
+                if (view.name === 'month') {
+                    var new_day = new_date.date();
+                    var end_day = moment(new_date).endOf('month').date();
+                    $('.table-condensed td').not('.old,.new').each(function() {
+                        var $this = $(this);
+                        var d = +$this.text();
+                        if (d >= new_day && d <= end_day) {
+                            $this.addClass('range');
+                            if (d === new_day) $this.addClass('selected');
+                            else if (d === end_day) $this.addClass('selected');
+                        }
+                    });
+                } else if (view.name === 'agendaWeek') {
+                    $('.table-condensed td.active').siblings().addClass('range');
+                }
+            } else {
+                // show tasks pane
+                $('#calendar').addClass('right-half');
+                $('#tasks').show();
+                get_tasks($('#impersonate').val());
+            }
+        }
+    });
+    
+    // HACK - add bootstrap button class to fullcalendar buttons
+    $('.fc-left button').addClass('btn-default');
+    
+    
+    // Navigation mini calendar
+    $('#mini-calendar').datepicker({
+        todayHighlight: true,
+    })
+    .on('changeDate', function(e) {
+        var new_date = e.date;
+        var calendar_view = $('#calendar').fullCalendar('getView');
+        var calendar_date = $('#calendar').fullCalendar('getDate');
+        
+        var same_month = new_date.getMonth() == calendar_date.month();
+        var same_week = new_date.getWeek() == calendar_date.week();
+        var same_day = new_date.getDate() == calendar_date.date();
+        
+        if (calendar_view.name === 'month') {
+            // if selected a day in current month - switch to week view
+            if (same_month) {
+                console.log('switch to week view');
+                $('#calendar').fullCalendar('changeView', 'agendaWeek');
+                $('#calendar').fullCalendar('gotoDate', new_date);
+            } else {
+                console.log('new fullcalendar month');
+                $('#calendar').fullCalendar('gotoDate', new_date);
+            }
+        } else if (calendar_view.name === 'agendaWeek') {
+            if (same_week) {
+                console.log('switch to day view')
+                $('#calendar').fullCalendar('changeView', 'agendaDay');
+                $('#calendar').fullCalendar('gotoDate', new_date);
+            } else {
+                console.log('new fullcalendar week');
+                $('#calendar').fullCalendar('gotoDate', new_date);
+            }
+            // highlight entire week - classname: range
+            
+        } else if (calendar_view.name === 'agendaDay') {
+            if (!same_day) {
+                console.log('new fullcalendar day');
+                $('#calendar').fullCalendar('gotoDate', new_date);
+            }
+        }
+        
+    });
+    
+    
+    // close task bubble if clicked outside
+    $(document).on('click', 'html', function(e) {
+        var x = $(e.target).closest('.fc-view-container').length;
+        x += $(e.target).closest('.bubble').length;
+        if (x === 0) {
+            $bubble.hide();
+            //$('#calendar').fullCalendar('unselect');
+        }
+    });
+    
+    var today = new moment();
+    $('#mini-calendar').datepicker('setDate', today.format('MM/DD/YYYY'));
+    
+    /*
+    $(document).on('change', '.task-duration', function() {
+        var minutes = $(this).val();
+        var m = minutes % 60;
+        var h = (minutes-m) / 60;
+        var duration = (h<10?'0':'') + h.toString() + ':' + (m<10?'0':'') + m.toString();
+        var $li = $(this).closest('li');
+        $li.data('event', {'title':$li.data('entity'), 'duration':duration});
+    });
+    */
+    
+    // bubble logic
+    
+    $(document).on('click', '#bubbleClose', function(e) {
+        $bubble.hide();
+        $('#calendar').fullCalendar('unselect');
+    });
+    $(document).on('click', '.bubble-button', function(e) {
+        e.preventDefault();
+    });
+    
+    $(document).on('click', '#create-button', function(e) {
+        e.preventDefault();
+        timelog_submit();
+    });
+    
+    function timelog_submit() {
+        $bubble.hide();
+        
+        var $selected = $('#task-select option:selected');
+        var title = $selected.text();
+        var projectname = title.slice(1).split(']')[0];
+        var projectid = $selected.data('projectid');
+        var taskid = $selected.val();
+        var start = moment($('#cb-starttime').val());
+        var end = moment($('#cb-endtime').val());
+        var duration = moment.duration(end.diff(start)) / 60000;
+        var comment = $('#cb-comment').val();
+        
+        $.ajax({
+            url: '{{=URL("ajaxcalls", "logTime")}}',
+            data: {
+                suserid: {{=shotgunid}},
+                taskid: taskid,
+                project: projectname,
+                projectid: projectid,
+                duration: duration,
+                date: start.format('YYYY-MM-DD'),
+                start: start.format(),
+                end: end.format(),
+                comment: comment,
+            }
+        })
+        .done(function(data) {
+            // remove mock event
+            $('#calendar').fullCalendar('unselect');
+            if (data !== 'fds') {
+                var event = {
+                    id: data,
+                    title: title,
+                    start: start,
+                    end: end,
+                    duration: duration,
+                    taskid: taskid,
+                    projectid: projectid,
+                    description: comment,
+                    allDay: false,
+                }
+                $("#calendar").fullCalendar('renderEvent', event);
+            } else {
+                alert('Timelog Failed.');
+            }
+        })
+        .fail(function() {
+            $('#calendar').fullCalendar('unselect');
+            alert('Timelog failed');
+        });
+    }
+    
+    // set initial task owner to none to force task fetch on first view switch
+    var task_owner = 'none';
+    var $task_lis = $('#task-list > li');
+    
+    function get_tasks(userid, bubblepop, taskid, bubble_event) {
+        
+        if (bubblepop) {
+            bubble_position(bubble_event);
+        }
+        
+        var sid = userid === '' ? {{=shotgunid}} : userid;
+        if (sid !== task_owner) {
+            task_owner = sid;
+            
+            $('#tasks').prepend(loading_overlay);
+            $('#lov > div').append('<div class="loading-msg text-muted">Loading Tasks...</div>');
+            
+            $.ajax({
+                url: '{{=URL("ajaxcalls", "getTaskCards")}}',
+                dataType: 'json',
+                data: {
+                    suserid: sid,
+                },
+            })
+            .done(function(data) {
+                $('#lov').remove();
+                // set task dropdown for bubble
+                task_dropdown = data['tasks'];
+                // fill in task list ul
+                $('#task-list').html(data['cards']);
+                $task_lis = $('#task-list > li');
+                
+                $task_lis.find('.task-duration').clockpicker({
+                    autoclose: true,
+                    minutestep: 5,
+                    placement: 'top',
+                    align: 'left',
+                    default: '01:00',
+                    afterDone: function(datetime) {
+                        var h = datetime.getHours();
+                        var m = datetime.getMinutes();
+                        var duration = (h<10?'0':'') + h.toString() + ':' + (m<10?'0':'') + m.toString();
+                        var $parent = $(this).closest('li');
+                        var event = $parent.data('event');
+                        event.duration = duration;
+                        console.log(event);
+                        $parent.data('event', event);
+                    },
+                });
+                
+                $('#task-list > li').each(function() {
+                    $(this).draggable({
+                        zIndex: 999,
+                        revert: true,
+                        revertDuration: 0,
+                        helper: 'clone',
+                        appendTo: 'body',
+                        scroll: 'false',
+                    });
+                });
+                
+                // reset filters
+                $('#filter-duedate').val('');
+                $('#filter-sort').val('name');
+                //filter_tasks();
+                
+                // populate filter selects
+                $('#filter-project').html(data['projs']);
+                $('#filter-status').html(data['status']);
+                
+                if (bubblepop) {
+                    $('#bubbleContent').find('.select-wrapper').html(task_dropdown);
+                    $('#task-select').val(taskid);
+                }
+            })
+            .fail(function() {
+                alert('Failed to fetch user tasks');
+            });
+        }
+    }
+    
+    function load_user(shotgun_id) {
+        if (current_shotgun_id !== shotgun_id) {
+            $('#calendar').fullCalendar('refetchEvents');
+            
+            /* only fetch user tasks if current view is day */
+            if ('agendaDay' === $("#calendar").fullCalendar('getView').name) {
+                get_tasks(shotgun_id);
+            }
+            if (shotgun_id !== '') {
+                window.location.hash = '!/' + shotgun_id;
+            }
+        }
+    }
+    
+    function filter_tasks() {
+        var proj = $('#filter-project').val();
+        var status = $('#filter-status').val();
+        var due = $('#filter-duedate').val();
+        
+        $task_lis.hide();
+        $task_lis.filter(function() {
+            var match = true;
+            var $this = $(this);
+            if (proj) {
+                match = $this.data('project') === proj;
+            }
+            if (status) {
+                match = $this.data('status') === status;
+            }
+            if (due) {
+                var task_duedate = moment($this.data('duedate'));
+                var tomorrow = moment().add(1, 'days');
+                /*var this_week_start = moment().startOf('isoWeek');
+                var this_week_end = moment().endOf('isoWeek');
+                var next_week_start = moment().add(1, 'weeks').startOf('isoWeek');
+                var next_week_end = moment().add(1, 'weeks').endOf('isoWeek');*/
+                var this_week_start = moment().weekdayWithStartWeekday(0, 0);
+                var this_week_end = moment().weekdayWithStartWeekday(6, 0);
+                var next_week_start = moment().add(1, 'weeks').weekdayWithStartWeekday(0, 0);
+                var next_week_end = moment().add(1, 'weeks').weekdayWithStartWeekday(6, 0);
+                
+                switch(due) {
+                    case 'today':
+                        match = task_duedate.isSame(moment(), 'day');
+                        break;
+                    case 'tomorrow':
+                        match = task_duedate.isSame(tomorrow, 'day');
+                        break;
+                    case 'thisweek':
+                        match = task_duedate.isBetween(this_week_start, this_week_end, 'day');
+                        break;
+                    case 'nextweek':
+                        match = task_duedate.isBetween(next_week_start, next_week_end, 'day');
+                        break;
+                    case 'twoweeks':
+                        match = task_duedate.isBetween(this_week_start, next_week_end, 'day');
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return match;
+        }).show();
+    }
+    
+    /* Task Filter/Sort */
+    $(document).on('change', '.task-filter', function() {
+        filter_tasks();
+        /*
+        tinysort('#task-list>li', {sortFunction: function(a,b) {
+            var nameA = a.elm.textContent;
+            var nameB = b.elm.textContent;
+            return nameA===nameB ? 0:(nameA > nameB ? -1:1);
+        }});
+        */
+    });
+    
+    $(document).on('change', '#impersonate', function() {
+        /* fetch timelogs and tasks of selected user */
+        load_user($(this).val());
+    });
+    
+    function check_hash_location() {
+        var imperson;
+        var hashloc = window.location.hash;
+        // #!/32
+        if (hashloc !== '') {
+            imperson = hashloc.slice(3).split('/')[0];
+        } else {
+            imperson = '';
+        }
+        $('#impersonate').val(imperson).change();
+    }
+    
+    $(window).on('hashchange', function() {
+        /* this event is also called when Impersonate select changes */
+        //check_hash_location();
+    });
+    
+    // check hash on page load
+    check_hash_location();
+    
+});
+</script>
+
+<script type="text/javascript" src="{{=URL('static','js/moment.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static','js/moment-timezone-with-data-2010-2020.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static','js/fullcalendar.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static','js/bootstrap-datepicker.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static', 'js/jquery-clockpicker.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static', 'js/tinysort.min.js')}}"></script>
+<script type="text/javascript" src="{{=URL('static', 'js/jquery.qtip.min.js')}}"></script>

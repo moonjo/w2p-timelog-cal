@@ -1,0 +1,155 @@
+.icon_status_act {
+    width: 12px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -28px -270px no-repeat;
+    display: inline-block;
+}
+.icon_status_apr {
+    width: 12px;
+    height: 12px;
+    background: transparent url(../images/sg_icon_image_map.png) -323px -212px no-repeat;
+    display: inline-block;
+}
+.icon_status_cbb {
+    width: 12px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -73px -240px no-repeat;
+    display: inline-block;
+}
+.icon_status_cmpt {
+    width: 11px;
+    height: 12px;
+    background: transparent url(../images/sg_icon_image_map.png) -239px -241px no-repeat;
+    display: inline-block;
+}
+.icon_status_fin {
+    width: 11px;
+    height: 11px;
+    background: transparent url(../images/sg_icon_image_map.png) -342px -240px no-repeat;
+    display: inline-block;
+}
+.icon_status_hld {
+    width: 7px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -14px -256px no-repeat;
+    display: inline-block;
+}
+.icon_status_ip {
+    width: 12px;
+    height: 13px;
+    background: transparent url(../images/sg_icon_image_map.png) -71px -256px no-repeat;
+    display: inline-block;
+}
+.icon_status_omt {
+    width: 12px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -163px -256px no-repeat;
+    display: inline-block;
+}
+.icon_status_pin {
+    width: 13px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -114px -330px no-repeat;
+    display: inline-block;
+}
+.icon_status_rdy {
+    width: 12px;
+    height: 11px;
+    background: transparent url(../images/sg_icon_image_map.png) -222px -256px no-repeat;
+    display: inline-block;
+}
+.icon_status_rev {
+    width: 12px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -276px -256px no-repeat;
+    display: inline-block;
+}
+.icon_status_wtg {
+    width: 12px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -224px -240px no-repeat;
+    display: inline-block;
+}
+.icon_status_vvv {
+    width: 14px;
+    height: 16px;
+    background: transparent url(../images/sg_icon_image_map.png) -0px -62px no-repeat;
+    display: inline-block;
+}
+.icon_status_monoap {
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/monoap.png) -0px -0px no-repeat;
+    display: inline-block;
+}
+
+/* off day status
+black circle: 0,0
+coconut: 15,0
+emg: 33,0
+sicksmiley: 52,0
+bug: 69,0
+umbrella: 88,0
+person: 105,0
+palm: 122,0
+*/
+div.icon_day_sick {
+    float: right;
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -69px -0px no-repeat
+}
+div.icon_day_vac {
+    float: right;
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -88px -0px no-repeat
+}
+div.icon_day_bereavement {
+    float: right;
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -105px -0px no-repeat
+}
+div.icon_day_jury {
+    float: right;
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -156px -0px no-repeat
+}
+div.icon_day_emergency {
+    float: right;
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -33px -0px no-repeat
+}
+div.icon_day_other {
+    float: right;
+    width: 14px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -190px -0px no-repeat
+}
+div.icon_day_flex {
+    float: right;
+    width: 15px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -248px -0px no-repeat
+}
+div.icon_holiday_can {
+    float: right;
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -140px -0px no-repeat
+}
+div.icon_holiday_us {
+    float: right;
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -172px -0px no-repeat
+}
+
+div.icon_status_test {
+    width: 16px;
+    height: 16px;
+    background: transparent url(../images/xhours_icon_image_map.png) -73px -256px no-repeat
+}
